@@ -10,11 +10,14 @@ Liri has a set of commands you can use your keyboard to execute.
 * Help you with getting basic info on a song with ___Spotify a Song___.
 * Find where your favorit bands are playing live with ___Find Concerts___.
 * Get the information you are dieing to know about a movie using ___Retrive Movie Info___.
+* If you don't know what you want Liri can just give you random info using the ___Just Give Me Something___ command. 
 
-Each correct answer is accompanied with a corresponding gif. All wrong answers have a gif corresponding with the questions. These are really fun! Even if you get them all right go back and play again to see all the wrong answer gifs (we know you meant to click the wrong answer don't worry no shame here!). If you missed some take note of the correct answer on the answer prompt screen and take another shot at it to see the gif.
+Best part is that if you ever forget Liri stores all this valuable information in his log file. But don't worry if you rather him forget feel free to use the ___Clear Log___ command and he will just wipe his own memory. Bots can do that ya' know?
 
-[Click here to Play Now!](https://jack87.github.io/TriviaGame/)
+[Check out the repo and Download Liri for yourself!](https://github.com/Jack87/liri-node-app)
 
-![screenshot](https://raw.githubusercontent.com/Jack87/TriviaGame/master/assets/images/screenShotTrivia.PNG)
+![screenshot](https://raw.githubusercontent.com/Jack87/liri-node-app/master/LIRI_in_Action_ScreenShot.PNG)
+
+![Liri in Action](https://raw.githubusercontent.com/Jack87/liri-node-app/master/LIRI_in_Action_GIF.gif)
 
 ### Good Luck! Have fun!
