@@ -7,9 +7,9 @@ var chalk = require('chalk');
 var moment = require('moment');
 var firstRun = require('first-run');
 var inquirer = require('inquirer');
-
 var command;
 var args;
+firstRun.clear()
 init()
 //Initialize App
 function init() {
@@ -30,7 +30,7 @@ function init() {
         "name": 'commandChoice',
         "message": chalk.magenta('What would you like to do?'),
         "type": 'list',
-        "choices": ['Spotify a Song', 'See what bands are in Town', 'Fetch Movie Info', 'Do What It Says', 'Clear Log', 'Exit Liri'],
+        "choices": ['Spotify a Song', 'Find Concerts', 'Retrive Movie Info', 'Just Give Me Someting', 'Clear Log', 'Exit Liri'],
       },
       {
         type: 'input',
@@ -43,9 +43,17 @@ function init() {
       {
         type: 'input',
         name: 'arg',
+        message: 'Okay, what band do you want to see?',
+        when: function (answers) {
+          return answers.commandChoice==="Find Concerts";
+        }
+      },
+      {
+        type: 'input',
+        name: 'arg',
         message: 'Alright, which movie?',
         when: function (answers) {
-          return answers.commandChoice==="Fetch Movie Info";
+          return answers.commandChoice==="Retrive Movie Info";
         }
       }
     ])
@@ -56,21 +64,20 @@ function init() {
       aiLogic(answers.commandChoice, answers.arg);
     });
   }
-
 // AI logic
 function aiLogic (command, args){
     switch (command) {
         case "Spotify a Song":
           spotifyThis(args);
           break;
-        case "Fetch Movie Info":
+        case "Retrive Movie Info":
           movieThis(args);
           break;
-        case "Concert this":
+        case "Find Concerts":
           concertThis(args);
           break;
-        case "Do What It Says":
-          doIt();
+        case "Just Give Me Someting":
+          doTextFile();
           break;
         case "Clear Log":
           clearFirstRun();
@@ -83,21 +90,34 @@ function aiLogic (command, args){
           init();
       }
 }
-
 //======================Utility Functions==============================================//
+// Reset the app state
+function clearFirstRun() {
+  // Clear out log file
+  fs.writeFile("log.txt", "", function(err) {
+    // If the code experiences any errors it will log the error to the console.
+    if (err) {
+      return console.log(err);
+    }
+  });
+  // See https://www.npmjs.com/package/first-run
+  //firstRun.clear();
+  firstRun.clear();
+  init();
+  console.log(chalk.gray("\nThe log file was cleared! It feels like when you get a haircut. Fresh!"));
+  console.log(chalk.gray("───────────────────────────────────────────"));
+}
 // Kill the app
 function endProgram() {
     firstRun.clear();
     return;
   }
-
 // Title case a string
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
-
 // Log data to an external file
 function writeLog(output) {
     // Set up the output
@@ -124,7 +144,6 @@ function spotifyThis(song) {
     }
     var output = "";
     var spotify = new Spotify(keys.spotify);
-
     spotify
       .search({
         type: 'track',
@@ -135,15 +154,16 @@ function spotifyThis(song) {
         if (songInfo) {
           output += "───────────────────────────────────────────\n";
           output += chalk.green("SONG:   \"" + toTitleCase(song).trim() + "\"\n");
-          output += chalk.green("ARTIST: " + songInfo.artists[0].name+"\n");
-          output += chalk.green("ALBUM:  " + songInfo.album.name+"\n");
-          output += chalk.green("LINK:   " + songInfo.href+"\n");
+          output += chalk.green("ARTIST: " + songInfo.artists[0].name + "\n");
+          output += chalk.green("ALBUM:  " + songInfo.album.name + "\n");
+          output += chalk.green("LINK:   " + songInfo.external_urls.spotify + "\n");
         } else {
           output += chalk.green(".....Sorry! I couldn't find that song. Try another one.\n");
         }
         output += "───────────────────────────────────────────\n";
         writeLog(output);
         console.log(output);
+        // console.log(songInfo)
         init();
       })
       .catch(function(err) {
@@ -158,15 +178,16 @@ function movieThis(title) {
       title = "mr nobody";
     }
     var queryUrl = "http://www.omdbapi.com/?t=" + title + "&y=&plot=short&apikey=trilogy";
+    console.log(queryUrl);
     axios
         .get(queryUrl)
         .then(function(response) {
-            // console.log(response.data);
+            //  console.log(response.data);
             if (response.data.Title === undefined) {
                 output += "\n───────────────────────────────────────────\n";
-                output += chalk.yellow("....Sorry! I couldn't find that movie. Try another one.\n");
+                output += chalk.yellow("....Sorry! I couldn't find info on the movie " + toTitleCase(title) + ". Try another one.\n");
             } else {
-            output += "───────────────────────────────────────────\n";
+            output += "\n───────────────────────────────────────────\n";
             output += chalk.yellow("TITLE:           " + response.data.Title + "\n");
             output += chalk.yellow("YEAR:            " + response.data.Year + "\n");
             output += chalk.yellow("IMDB Rating:     " + response.data.Ratings[0].Value + "\n");
@@ -176,27 +197,70 @@ function movieThis(title) {
             output += chalk.yellow("Plot:            " + response.data.Plot + "\n");
             output += chalk.yellow("Actors:          " + response.data.Actors + "\n");
             }
+            output += "\n───────────────────────────────────────────\n";
+            writeLog(output);
+            console.log(output);
+            init();
         })
         .catch(function(error) {
-            // if (error.response) {
-            // // The request was made and the server responded with a status code
-            // // that falls out of the range of 2xx
-            // console.log(error.response.data);
-            // console.log(error.response.status);
-            // console.log(error.response.headers);
-            // } else if (error.request) {
-            // // The request was made but no response was received
-            // // `error.request` is an object that comes back with details pertaining to the error that occurred.
-            // console.log(error.request);
-            // } else {
-            // // Something happened in setting up the request that triggered an Error
-            // console.log("Error", error.message);
-            // }
-            // console.log(error.config);
-            console.log("")
-        });
-    output += "\n───────────────────────────────────────────\n";
-    writeLog(output);
-    console.log(output);
-    init();
+            console.log("");
+        });    
+}
+// function concert this
+function concertThis(artist) {
+  var output = "";
+  if (artist == "") {
+    artist = "disturbed";
+  }
+  var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+  // console.log(queryUrl)
+  axios
+      .get(queryUrl)
+      .then(function(response) {
+        // console.log(response); 
+         if (response.data == undefined || response.data.length == 0){
+          output += "\n───────────────────────────────────────────\n";
+          output += chalk.magenta("....Sorry! I couldn't find concert data for " + toTitleCase(artist) + ". Try another artist.\n");
+          output += "\n───────────────────────────────────────────\n";
+          writeLog(output);
+          console.log(output);
+         } else {
+           //console.log(response.data.slice(0,10))
+            response.data.slice(0,10).forEach(function (element) {
+            output = ""
+            output += "\n───────────────────────────────────────────\n";
+            output += chalk.magenta("Artist: " + toTitleCase(artist) + "\n");
+            output += chalk.magenta("Venue: " + element.venue["name"] + "\n");
+            if (element.venue["region"]==""){
+              output += chalk.magenta("Location: " + element.venue["city"] + ", " + element.venue["country"] + "\n");
+            } else {
+              output += chalk.magenta("Location: " + element.venue["city"] + ", " + element.venue["region"] + ", " + element.venue["country"] + "\n");
+            }
+            output += chalk.magenta("Date: " + moment(element.datetime).format("MM/DD/YYYY") + "\n");
+            output += "\n───────────────────────────────────────────\n";
+            writeLog(output);
+            console.log(output);
+        })}
+        init();
+      })
+      .catch(function(error) {
+          console.log("");
+      });
+
+}
+// Execute the command from text file
+function doTextFile() {
+  fs.readFile("random.txt", "utf8", function(error, data) {
+    // If the code experiences any errors it will log the error to the console.
+    if (error) {
+      return console.log(error);
+    }
+    // Then split it by commas (to make it more readable)
+    var dataArr = data.split(",");
+    command = dataArr[0];
+    args = dataArr[1];
+    //console.log(dataArr)
+    //console.log(command, args)
+    aiLogic(command, args);
+  });
 }
