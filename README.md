@@ -16,9 +16,10 @@ Best part is that if you ever forget Liri stores all this valuable information i
 
 [Check out the repo and Download Liri for yourself!](https://github.com/Jack87/liri-node-app)
 
-<video width="854" height="480" controls>
+[![Liri in Actioni](http://img.youtube.com/vi/Tb2ksVboIf8/0.jpg)](https://youtu.be/Tb2ksVboIf8 "Go Liri Go!")
+<!-- <video width="854" height="480" controls>
   <source src="https://raw.githubusercontent.com/Jack87/liri-node-app/master/LIRI_in_Action_Video.webm" type="video/webm">
-</video>
+</video> -->
 
 ![screenshot](https://raw.githubusercontent.com/Jack87/liri-node-app/master/LIRI_in_Action_ScreenShot.PNG)
 
