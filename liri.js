@@ -21,7 +21,7 @@ function init() {
       console.log(chalk.yellow("   | |      | | | |__) | | |   | |_) | |  | | | |   "));
       console.log(chalk.yellow("   | |      | | |  _  /  | |   |  _ <| |  | | | |   "));
       console.log(chalk.green("   | |____ _| |_| | \\ \\ _| |_  | |_) | |__| | | |   "));
-      console.log(chalk.green("   |______|_____|_|  |_|_____| |____/ |____/  |_|   "));
+      console.log(chalk.green("   |______|_____|_|  |_|_____| |____/ \\____/  |_|   "));
       console.log(chalk.blue("I am Liri, here to assist you!."));
       console.log(chalk.gray("───────────────────────────────────────────"));
     }
