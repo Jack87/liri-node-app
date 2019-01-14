@@ -13,7 +13,7 @@ firstRun.clear()
 init()
 //Initialize App
 function init() {
-    // If this is the first time the user is running the app, include title graphic
+    // If this is the initial launch of the Liri application, include title graphic
     if(firstRun()) {
       console.log('\033c'); // clears out the terminal... usually.
       console.log(chalk.magenta("    _      _____ _____  _____   ____   ____ _______ "));
@@ -101,7 +101,6 @@ function clearFirstRun() {
     }
   });
   // See https://www.npmjs.com/package/first-run
-  //firstRun.clear();
   firstRun.clear();
   init();
   console.log(chalk.gray("\nThe log file was cleared! It feels like when you get a haircut. Fresh!"));
@@ -111,7 +110,7 @@ function clearFirstRun() {
 function endProgram() {
     firstRun.clear();
     return;
-  }
+ }
 // Title case a string
 function toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
@@ -182,7 +181,6 @@ function movieThis(title) {
     axios
         .get(queryUrl)
         .then(function(response) {
-            //  console.log(response.data);
             if (response.data.Title === undefined) {
                 output += "\n───────────────────────────────────────────\n";
                 output += chalk.yellow("....Sorry! I couldn't find info on the movie " + toTitleCase(title) + ". Try another one.\n");
@@ -213,7 +211,6 @@ function concertThis(artist) {
     artist = "disturbed";
   }
   var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
-  // console.log(queryUrl)
   axios
       .get(queryUrl)
       .then(function(response) {
@@ -225,7 +222,6 @@ function concertThis(artist) {
           writeLog(output);
           console.log(output);
          } else {
-           //console.log(response.data.slice(0,10))
             response.data.slice(0,10).forEach(function (element) {
             output = ""
             output += "\n───────────────────────────────────────────\n";
@@ -259,8 +255,6 @@ function doTextFile() {
     var dataArr = data.split(",");
     command = dataArr[0];
     args = dataArr[1];
-    //console.log(dataArr)
-    //console.log(command, args)
     aiLogic(command, args);
   });
 }
